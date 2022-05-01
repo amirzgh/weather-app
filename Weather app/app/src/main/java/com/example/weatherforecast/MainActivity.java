@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (IOException e)          { e.printStackTrace(); }
         catch (InterruptedException e) { e.printStackTrace(); }
-
         return false;
     }
 }
