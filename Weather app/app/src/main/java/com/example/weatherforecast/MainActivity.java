@@ -31,11 +31,7 @@ public class MainActivity extends AppCompatActivity {
         weatherDataBase.insertData("london", "1", "2", "3");
 
 
-        ////
-        double g = 40.730610;
-        double s = -73.935242;
-        WeatherInfo.getWeatherInfoByCoordinates(g, s, getApplicationContext(), new WeatherInfoHandler());
-////
+
         String coordinate = getCoordinate("Tehran");
         if (coordinate != null)
             Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
@@ -74,18 +70,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class WeatherInfoHandler extends Handler {
-        public static ArrayList<String> weather = new ArrayList<>();
-
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            Bundle bundle = msg.getData();
-            weather.clear();
-            weather = bundle.getStringArrayList("cityWeatherInfo");
-//            for (int i = 0; i < 6; i++) {
-//                System.out.println(weather.get(i) + " ----------------------------------------------------------------\n\n\n");
-//
-//            }
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 }
