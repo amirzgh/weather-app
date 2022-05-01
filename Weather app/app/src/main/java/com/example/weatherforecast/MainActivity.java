@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
         GeoLocation geoLocation = new GeoLocation();
         geoLocation.getAddress("a", getApplicationContext(), new GeoHandler());
-    }
 
+    System.out.println(isOnline()+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    }
 
 
     private class GeoHandler extends Handler {
@@ -43,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
 
-
+        return false;
+    }
 }
