@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class WeatherInfo {
+    ///40.730610,	-73.935242
 
     static ArrayList<String> cityWeatherInfo = new ArrayList<>();
 
@@ -35,8 +36,8 @@ public class WeatherInfo {
                     cityWeatherInfo.add(String.valueOf(description));//0
 
                     JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
-                    double temp = jsonObjectMain.getDouble("temp") - 273.15;
-                    cityWeatherInfo.add(String.valueOf(temp));//1
+                    double temper = jsonObjectMain.getDouble("temp") - 273.15;
+                    cityWeatherInfo.add(String.valueOf(temper));//1
 
                     double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                     cityWeatherInfo.add(String.valueOf(feelsLike));//2
