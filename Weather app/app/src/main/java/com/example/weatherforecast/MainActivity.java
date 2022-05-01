@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
-
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
