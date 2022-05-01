@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(isOnline() + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 
-
     private class GeoHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
