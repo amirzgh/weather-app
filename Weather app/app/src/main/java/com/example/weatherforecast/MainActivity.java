@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-
             Bundle bundle = msg.getData();
             weather.clear();
             weather = bundle.getStringArrayList("cityWeatherInfo");
