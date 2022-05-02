@@ -5,21 +5,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DBName = "WeatherDatabase";
-    private static final int DB_VERSION = 2;
     public static final String TableName = "WeatherInfo";
-    public static final String city = "city";
-    public static final String description = "description";
-    public static final String temperature = "temperature";
-    public static final String feels_like = "feels_like";
-    public static final String speed = "speed";
-    public static final String pressure = "pressure";
-    public static final String humidity = "humidity";
-    public static final String clouds = "clouds";
+//    public static final String city = "city";
+//    public static final String description = "description";
+//    public static final String temperature = "temperature";
+//    public static final String feels_like = "feels_like";
+//    public static final String speed = "speed";
+//    public static final String pressure = "pressure";
+//    public static final String humidity = "humidity";
+//    public static final String clouds = "clouds";
 
     public DBHelper(@Nullable Context context) {
         super(context, DBName, null, 1);
@@ -27,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table WeatherInfo(city text primary key, description text, speed text, pressure text, temperature text, feels_liks text, humidity text, clouds text)");
+        sqLiteDatabase.execSQL("create table WeatherInfo(city text primary key, description text, speed text, pressure text, temperature text, feels_like text, humidity text, clouds text)");
     }
 
     @Override
@@ -49,7 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("humidity", humidity);
         contentValues.put("clouds", clouds);
         db.insert(TableName, null, contentValues);
-        db.close();
         return true;
     }
 
@@ -57,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorCourses = db.rawQuery("SELECT * FROM " + TableName, null);
+        Cursor cursorCourses = db.rawQuery("select * from WeatherInfo", null);
 
         if (cursorCourses.moveToFirst()) {
             do {

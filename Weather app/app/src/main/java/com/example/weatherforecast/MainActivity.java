@@ -39,12 +39,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         weatherDataBase = new DBHelper(MainActivity.this);
-        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6,", "7");
-        System.out.println(weatherDataBase.getDataByCityName("Tehran") + " ---------------------------------------------------------------------------");
+        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
+        weatherDataBase.insertData("london", "1", "2", "3", "4", "5", "6", "7");
+        weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
+        weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
 
-        String coordinate = getCoordinate("Tehran");
-        if (coordinate != null)
-            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
+
+        ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
+        if (arrayList != null) {
+            for (String model : arrayList) {
+                Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
+            }
+        }
+//
+//        String coordinate = getCoordinate("Tehran");
+        //if (coordinate != null)
+            //Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
     }
 
     private String getCoordinate(String cityName) {
@@ -62,24 +72,6 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-
-    private class GeoHandler extends Handler {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            String address;
-            switch (msg.what) {
-                case 1:
-                    Bundle bundle = msg.getData();
-                    address = bundle.getString("address");
-                    break;
-                default:
-                    address = null;
-            }
-            if (address != null) {
-                Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     public boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
