@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TableLayout;
 import android.widget.Toast;
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper weatherDataBase;
     TabLayout tabLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
             }
         }
-//
-//        String coordinate = getCoordinate("Tehran");
-        //if (coordinate != null)
-            //Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
+        WeatherInfo mm=new WeatherInfo();
+        mm.getWeatherInfoByCoordinates(40.730610,-73.935242,getApplicationContext());
+
+        String coordinate = getCoordinate("Tehran");
+        if (coordinate != null)
+            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -102,7 +104,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
-
 
 }
