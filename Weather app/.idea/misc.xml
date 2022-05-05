@@ -3,11 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Education/SUT/Spring 00-01/mobile programming/weather-app/Weather app/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.3385" />
-        <entry key="..\:/Education/SUT/Spring 00-01/mobile programming/weather-app/Weather app/app/src/main/res/drawable/ic_launcher_background.xml" value="0.189" />
-        <entry key="..\:/Education/SUT/Spring 00-01/mobile programming/weather-app/Weather app/app/src/main/res/layout/activity_main.xml" value="0.3277777777777778" />
-        <entry key="..\:/Education/SUT/Spring 00-01/mobile programming/weather-app/Weather app/app/src/main/res/layout/fragment_home_page.xml" value="0.1" />
-        <entry key="..\:/Education/SUT/Spring 00-01/mobile programming/weather-app/Weather app/app/src/main/res/layout/fragment_setting.xml" value="0.3277777777777778" />
+        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.5" />
       </map>
     </option>
   </component>

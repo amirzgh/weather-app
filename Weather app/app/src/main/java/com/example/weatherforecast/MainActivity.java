@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TableLayout;
 import android.widget.Toast;
@@ -24,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper weatherDataBase;
     TabLayout tabLayout;
-    Fragment fragment = new HomePage();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setFragment(fragment);
 
         weatherDataBase = new DBHelper(MainActivity.this);
         weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
@@ -44,24 +42,25 @@ public class MainActivity extends AppCompatActivity {
         weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
         weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
 
-
+    System.out.println(CheckConnectivity.isOnline()+" +++++++++++++++++++++++++++++++++++++++++");
         ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
         if (arrayList != null) {
             for (String model : arrayList) {
                 Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
             }
         }
-//
-//        String coordinate = getCoordinate("Tehran");
-        //if (coordinate != null)
-            //Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
+        WeatherInfo mm=new WeatherInfo();
+        mm.getWeatherInfoByCoordinates(40.730610,-73.935242,getApplicationContext());
+
+        String coordinate = getCoordinate("Tehran");
+        if (coordinate != null)
+            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
-
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                Fragment fragment = null;
                 switch (tab.getPosition()){
                     case 0:
                         fragment = new HomePage();
@@ -70,7 +69,12 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new setting();
                         break;
                 }
-                setFragment(fragment);
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                assert fragment != null;
+                fragmentTransaction.replace(R.id.main,fragment);
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.commit();
             }
 
             @Override
@@ -101,27 +105,4 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-
-    public boolean isOnline() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void setFragment(Fragment fragment){
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        assert fragment != null;
-        fragmentTransaction.replace(R.id.main,fragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.commit();
-    }
 }
