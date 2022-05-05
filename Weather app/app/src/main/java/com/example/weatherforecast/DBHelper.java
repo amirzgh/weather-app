@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table WeatherInfo(city text primary key, description text, speed text, pressure text, temperature text, feels_like text, humidity text, clouds text)");
+        sqLiteDatabase.execSQL("create table WeatherInfo(latitude text,longitude text, description text, speed text, pressure text, temperature text, feels_like text, humidity text, clouds text,cityName text, primary key (latitude, longitude))");
     }
 
     @Override
@@ -37,11 +37,12 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertData(String city, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds) {
+    public boolean insertData(String latitude, String longitude, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds, String cityName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("city", city);
+        contentValues.put("latitude", latitude);
+        contentValues.put("longitude", longitude);
         contentValues.put("description", description);
         contentValues.put("speed", speed);
         contentValues.put("pressure", pressure);
@@ -49,11 +50,12 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("feels_like", feels_like);
         contentValues.put("humidity", humidity);
         contentValues.put("clouds", clouds);
+        contentValues.put("cityName", cityName);
         db.insert(TableName, null, contentValues);
         return true;
     }
 
-    public ArrayList<String> getDataByCityName(String cityName) {
+    public ArrayList<String> getDataFromDataBase(String latitude, String longitude) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -61,7 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursorCourses.moveToFirst()) {
             do {
-                if (cursorCourses.getString(0).equals(cityName)) {
+                if (cursorCourses.getString(0).equals(latitude) && cursorCourses.getString(1).equals(longitude)) {
                     exactWeatherInfo.add(cursorCourses.getString(0));
                     exactWeatherInfo.add(cursorCourses.getString(1));
                     exactWeatherInfo.add(cursorCourses.getString(2));
@@ -70,6 +72,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     exactWeatherInfo.add(cursorCourses.getString(5));
                     exactWeatherInfo.add(cursorCourses.getString(6));
                     exactWeatherInfo.add(cursorCourses.getString(7));
+                    exactWeatherInfo.add(cursorCourses.getString(8));
+                    exactWeatherInfo.add(cursorCourses.getString(9));
                     return exactWeatherInfo;
                 }
             } while (cursorCourses.moveToNext());

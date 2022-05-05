@@ -37,24 +37,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         weatherDataBase = new DBHelper(MainActivity.this);
-        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
-        weatherDataBase.insertData("london", "1", "2", "3", "4", "5", "6", "7");
-        weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
-        weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
+//        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
+//        weatherDataBase.insertData("london", "1", "2", "3", "4", "5", "6", "7");
+//        weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
+//        weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
 
     System.out.println(CheckConnectivity.isOnline()+" +++++++++++++++++++++++++++++++++++++++++");
-        ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
-        if (arrayList != null) {
-            for (String model : arrayList) {
-                Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
+
+        Double la, lo;
+        la = 30.2924085;
+        lo = 57.0645647;
+        WeatherInfo mm = new WeatherInfo();
+        mm.getWeatherInfoByCoordinates(la,lo,getApplicationContext(), weatherDataBase);
+        ArrayList<String> dataBaseData = weatherDataBase.getDataFromDataBase(String.valueOf(la), String.valueOf(lo));
+        if(dataBaseData != null) {
+            for (String str : dataBaseData) {
+                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
             }
         }
-        WeatherInfo mm=new WeatherInfo();
-        mm.getWeatherInfoByCoordinates(40.730610,-73.935242,getApplicationContext());
 
-        String coordinate = getCoordinate("Tehran");
-        if (coordinate != null)
-            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
