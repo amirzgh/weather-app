@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper weatherDataBase;
     TabLayout tabLayout;
+    Fragment fragment = new HomePage();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setFragment(fragment);
 
         weatherDataBase = new DBHelper(MainActivity.this);
         weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
@@ -55,10 +57,11 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Fragment fragment = null;
+
                 switch (tab.getPosition()){
                     case 0:
                         fragment = new HomePage();
@@ -67,12 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new setting();
                         break;
                 }
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                assert fragment != null;
-                fragmentTransaction.replace(R.id.main,fragment);
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                fragmentTransaction.commit();
+                setFragment(fragment);
             }
 
             @Override
@@ -116,5 +114,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private void setFragment(Fragment fragment){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        assert fragment != null;
+        fragmentTransaction.replace(R.id.main,fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.commit();
     }
 }
