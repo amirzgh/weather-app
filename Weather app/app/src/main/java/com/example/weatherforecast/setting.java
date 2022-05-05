@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +19,7 @@ import android.widget.CompoundButton;
  */
 public class setting extends Fragment {
     SwitchCompat switch_btn;
+    TextView textView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,6 +68,7 @@ public class setting extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
 
         switch_btn = view.findViewById(R.id.DarkMode_switch);
+        textView = view.findViewById(R.id.dark);
 
         if (AppCompatDelegate.getDefaultNightMode()== AppCompatDelegate.MODE_NIGHT_YES) {
             switch_btn.setChecked(true);

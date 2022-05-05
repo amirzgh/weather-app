@@ -10,4 +10,5 @@
     <string name="longitude">longitude</string>
     <string name="search">search</string>
     <string name="cityName">City</string>
+    <string name="dark">Enter Dark Mode</string>
 </resources>
