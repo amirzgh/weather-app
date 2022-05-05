@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
         weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
 
-
+    System.out.println(CheckConnectivity.isOnline()+" +++++++++++++++++++++++++++++++++++++++++");
         ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
         if (arrayList != null) {
             for (String model : arrayList) {
@@ -104,17 +104,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public boolean isOnline() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+
 }
