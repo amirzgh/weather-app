@@ -41,7 +41,7 @@ public class Geocoding {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return addresses != null ? addresses.get(0).getLocality() : null;
+        return addresses != null ? addresses.get(0).getAddressLine(0) : null;
     }
 
 }

@@ -46,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
         weatherDataBase = new DBHelper(MainActivity.this);
         geocoding = new Geocoding(MainActivity.this);
 
-        Double[] coordinate = geocoding.getCoordinate("Tabriz");
+        Double[] coordinate = geocoding.getCoordinate("delhi");
 
-        latitude = coordinate[0];
-        longitude = coordinate[1];
+        if(coordinate[2] == 1.0) {
+            latitude = coordinate[0];
+            longitude = coordinate[1];
+        }
 
 
         Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
