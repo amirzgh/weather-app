@@ -1,8 +1,6 @@
 package com.example.weatherforecast;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,13 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 public class WeatherInfo {
     //40.730610,	-73.935242

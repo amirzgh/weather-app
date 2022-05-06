@@ -54,9 +54,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         ////when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
-        new WeatherInfo().getWeatherInfoByCoordinates(40.730610, -73.935242, getApplicationContext(), new VolleyCallback() {
+        new WeatherInfo().getWeatherInfoByCoordinates(36.778259, -119.417931, getApplicationContext(), new VolleyCallback() {
             @Override
             public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                if(result != null){
+                    for(ArrayList<String> s : result) {
+                        for (String str : s)
+                            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                    }
+                }
                 System.out.println(result+" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6");
                 //get result of weather here ...
             }
