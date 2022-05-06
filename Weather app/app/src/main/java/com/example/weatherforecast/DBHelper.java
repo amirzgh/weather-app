@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
@@ -13,14 +12,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DBName = "WeatherDatabase";
     public static final String TableName = "WeatherInfo";
-//    public static final String city = "city";
-//    public static final String description = "description";
-//    public static final String temperature = "temperature";
-//    public static final String feels_like = "feels_like";
-//    public static final String speed = "speed";
-//    public static final String pressure = "pressure";
-//    public static final String humidity = "humidity";
-//    public static final String clouds = "clouds";
+
 
     public DBHelper(@Nullable Context context) {
         super(context, DBName, null, 1);
@@ -28,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table WeatherInfo(latitude text,longitude text, description text, speed text, pressure text, temperature text, feels_like text, humidity text, clouds text,cityName text, primary key (latitude, longitude))");
+        sqLiteDatabase.execSQL("create table WeatherInfo(latitude text,longitude text, numDay text, description text, speed text, pressure text, temperature text, feels_like text, humidity text, clouds text,cityName text, reqHour text, primary key (latitude, longitude, numDay))");
     }
 
     @Override
@@ -37,12 +29,13 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertData(String latitude, String longitude, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds, String cityName) {
+    public boolean insertData(String latitude, String longitude, String numDay, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds, String cityName, String reqHour) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("latitude", latitude);
         contentValues.put("longitude", longitude);
+        contentValues.put("numDay", numDay);
         contentValues.put("description", description);
         contentValues.put("speed", speed);
         contentValues.put("pressure", pressure);
@@ -51,11 +44,12 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("humidity", humidity);
         contentValues.put("clouds", clouds);
         contentValues.put("cityName", cityName);
+        contentValues.put("reqHour", reqHour);
         db.insert(TableName, null, contentValues);
         return true;
     }
 
-    public ArrayList<String> getDataFromDataBase(String latitude, String longitude) {
+    public ArrayList<String> getDataFromDataBase(String latitude, String longitude, String numDay) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -63,7 +57,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursorCourses.moveToFirst()) {
             do {
-                if (cursorCourses.getString(0).equals(latitude) && cursorCourses.getString(1).equals(longitude)) {
+                if (cursorCourses.getString(0).equals(latitude) &&
+                        cursorCourses.getString(1).equals(longitude) &&
+                        cursorCourses.getString(2).equals(numDay)) {
                     exactWeatherInfo.add(cursorCourses.getString(0));
                     exactWeatherInfo.add(cursorCourses.getString(1));
                     exactWeatherInfo.add(cursorCourses.getString(2));
@@ -74,6 +70,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     exactWeatherInfo.add(cursorCourses.getString(7));
                     exactWeatherInfo.add(cursorCourses.getString(8));
                     exactWeatherInfo.add(cursorCourses.getString(9));
+                    exactWeatherInfo.add(cursorCourses.getString(10));
+                    exactWeatherInfo.add(cursorCourses.getString(11));
                     return exactWeatherInfo;
                 }
             } while (cursorCourses.moveToNext());

@@ -18,14 +18,19 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     DBHelper weatherDataBase;
+    Geocoding geocoding;
     TabLayout tabLayout;
+    double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,40 +43,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        weatherDataBase = new DBHelper(MainActivity.this);
-//        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
-//        weatherDataBase.insertData("london", "1", "2", "3", "4", "5", "6", "7");
-//        weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
-//        weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
-//
-//        System.out.println(CheckConnectivity.isOnline() + " +++++++++++++++++++++++++++++++++++++++++");
-//        ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
-//        if (arrayList != null) {
-//            for (String model : arrayList) {
-//                Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
-//            }
-//        }
+        weatherDataBase = new DBHelper(MainActivity.this);
+        geocoding = new Geocoding(MainActivity.this);
+
+        Double[] coordinate = geocoding.getCoordinate("Tabriz");
+
+        latitude = coordinate[0];
+        longitude = coordinate[1];
 
 
+        Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
         ////when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
-        new WeatherInfo().getWeatherInfoByCoordinates(36.778259, -119.417931, getApplicationContext(), new VolleyCallback() {
+        new WeatherInfo().getWeatherInfoByCoordinates(latitude, longitude, getApplicationContext(), new VolleyCallback() {
             @Override
             public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
                 if(result != null){
                     for(ArrayList<String> s : result) {
-                        for (String str : s)
-                            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                        weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
+                                s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
+                                geocoding.getCityFromCoordinate(latitude, longitude), String.valueOf(LocalTime.now()));
                     }
                 }
-                System.out.println(result+" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6");
-                //get result of weather here ...
             }
         });
-        ///
-
-        String coordinate = getCoordinate("Tehran");
-        if (coordinate != null)
-            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -104,23 +98,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
-
-    private String getCoordinate(String cityName) {
-        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-        String result = null;
-        try {
-            List addressList = geocoder.getFromLocationName(cityName, 1);
-            if (addressList != null && addressList.size() > 0) {
-                Address address = (Address) addressList.get(0);
-                result = address.getLatitude() + "," + address.getLongitude();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-
 }

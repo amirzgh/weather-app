@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class WeatherInfo {
     //40.730610,	-73.935242
 
-    public ArrayList<ArrayList<String>> getWeatherInfoByCoordinates(double latitude, double longitude, Context context, final VolleyCallback callback) {
+    public void getWeatherInfoByCoordinates(double latitude, double longitude, Context context, final VolleyCallback callback) {
         ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>(8);
         String apiKey = "60d02a8e8559a6937eb7f31c672e18ba";
         String tempUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&cnt=" + 8 + "&appid=" + apiKey + "&units=metric";
@@ -38,6 +38,8 @@ public class WeatherInfo {
                     JSONArray jsonArray = jsonResponse.getJSONArray("list");
 
                     for (int i = 0; i < jsonArray.length(); i++) {
+                        cityWeatherInfo.get(i).add(String.valueOf(i));
+
                         JSONObject jsonObjectWeather = jsonArray.getJSONObject(i);
                         JSONObject weather = jsonObjectWeather.getJSONArray("weather").getJSONObject(0);
                         String description = weather.getString("description");
@@ -86,7 +88,6 @@ public class WeatherInfo {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
 
-        return cityWeatherInfo;
     }
 
 
