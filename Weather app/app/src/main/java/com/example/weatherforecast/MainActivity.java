@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -25,44 +26,53 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper weatherDataBase;
     TabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //check condition for dark_mode
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.Theme_Dark);
-        }else setTheme(R.style.Theme_Light);
+        } else setTheme(R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        weatherDataBase = new DBHelper(MainActivity.this);
+//        weatherDataBase = new DBHelper(MainActivity.this);
 //        weatherDataBase.insertData("Tehran", "1", "2", "3", "4", "5", "6", "7");
 //        weatherDataBase.insertData("london", "1", "2", "3", "4", "5", "6", "7");
 //        weatherDataBase.insertData("los angles", "1", "2", "3", "4", "5", "6", "7");
 //        weatherDataBase.insertData("new york", "1", "2", "3", "4", "5", "6", "7");
+//
+//        System.out.println(CheckConnectivity.isOnline() + " +++++++++++++++++++++++++++++++++++++++++");
+//        ArrayList<String> arrayList = weatherDataBase.getDataByCityName("Tehran");
+//        if (arrayList != null) {
+//            for (String model : arrayList) {
+//                Toast.makeText(getApplicationContext(), model, Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
-    System.out.println(CheckConnectivity.isOnline()+" +++++++++++++++++++++++++++++++++++++++++");
 
-        Double la, lo;
-        la = 30.2924085;
-        lo = 57.0645647;
-        WeatherInfo mm = new WeatherInfo();
-        mm.getWeatherInfoByCoordinates(la,lo,getApplicationContext(), weatherDataBase);
-        ArrayList<String> dataBaseData = weatherDataBase.getDataFromDataBase(String.valueOf(la), String.valueOf(lo));
-        if(dataBaseData != null) {
-            for (String str : dataBaseData) {
-                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+        ////when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
+        new WeatherInfo().getWeatherInfoByCoordinates(40.730610, -73.935242, getApplicationContext(), new VolleyCallback() {
+            @Override
+            public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                System.out.println(result+" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6");
+                //get result of weather here ...
             }
-        }
+        });
+        ///
 
+        String coordinate = getCoordinate("Tehran");
+        if (coordinate != null)
+            Toast.makeText(getApplicationContext(), coordinate, Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
-                switch (tab.getPosition()){
+                switch (tab.getPosition()) {
                     case 0:
                         fragment = new HomePage();
                         break;
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 assert fragment != null;
-                fragmentTransaction.replace(R.id.main,fragment);
+                fragmentTransaction.replace(R.id.main, fragment);
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();
             }
@@ -105,5 +115,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
 
 }
