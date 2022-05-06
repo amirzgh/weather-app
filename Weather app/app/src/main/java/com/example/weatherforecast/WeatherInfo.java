@@ -2,6 +2,7 @@ package com.example.weatherforecast;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,10 +24,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WeatherInfo {
-    ///40.730610,	-73.935242
+    //40.730610,	-73.935242
 
-
-    public ArrayList<ArrayList<String>> getWeatherInfoByCoordinates(double latitude, double longitude, Context context) {
+    public ArrayList<ArrayList<String>> getWeatherInfoByCoordinates(double latitude, double longitude, Context context, final VolleyCallback callback) {
         ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>(8);
         String apiKey = "60d02a8e8559a6937eb7f31c672e18ba";
         String tempUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&cnt=" + 8 + "&appid=" + apiKey + "&units=metric";
@@ -55,7 +55,6 @@ public class WeatherInfo {
                         double temper = jsonObjectMain.getDouble("temp") - 273.15;
                         cityWeatherInfo.get(i).add(String.valueOf(temper));//1
 
-
                         double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                         cityWeatherInfo.get(i).add(String.valueOf(feelsLike));//2
 
@@ -74,21 +73,13 @@ public class WeatherInfo {
                         String clouds = jsonObjectClouds.getString("all");
                         cityWeatherInfo.get(i).add(String.valueOf(clouds));//6
 
-
-                        ////
-                        System.out.println(cityWeatherInfo.get(i).get(1) + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                        for (int j = 0; j < 7; j++) {
-                            System.out.println(cityWeatherInfo.get(i).get(j) + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        if (i == 7) {
+                            callback.onSuccessfulResponse(cityWeatherInfo);
                         }
-                        System.out.println(i + " =day--------------------------------------------------------");
-                        ////
-
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
             }
 
