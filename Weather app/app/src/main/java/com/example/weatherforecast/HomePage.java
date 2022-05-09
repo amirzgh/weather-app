@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import java.util.ArrayList;
 
 
 public class HomePage extends Fragment {
@@ -22,6 +25,11 @@ public class HomePage extends Fragment {
     EditText latitude_txt;
     EditText city_text;
     Boolean isChecked = false;
+
+    WeatherInfo weatherInfo = new WeatherInfo();
+    VolleyCallback volleyCallback;
+
+    ArrayList<String> weatherResponse = new ArrayList<>();
 
 
 
@@ -95,6 +103,24 @@ public class HomePage extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isChecked = b;
                 changeVisibility();
+            }
+        });
+
+        search_btn.setOnClickListener(new View.OnClickListener() {
+            private static final String TAG = "click";
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: ");
+                weatherInfo.getWeatherInfoByCoordinates(40.730610, -73.935242, getContext(), new VolleyCallback() {
+                    @Override
+                    public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                        Log.d(String.valueOf(result.size()), "onSuccessfulResponse: ");
+                        for (int i = 0; i < result.size(); i++) {
+                            Log.d(String.valueOf(i), "onSuccessfulResponse: ");
+                            Log.d(result.get(i).toString(), "onSuccessfulResponse: ");
+                        }
+                    }
+                });
             }
         });
 

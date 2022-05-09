@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.Toast;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Geocoding geocoding;
     TabLayout tabLayout;
     double latitude, longitude;
+
+    WeatherInfo weatherInfo = new WeatherInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,21 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("click", "onTabSelected: ");
+                ///////
+                weatherInfo.getWeatherInfoByCoordinates(40.730610, -73.935242,getApplicationContext() , new VolleyCallback() {
+                    @Override
+                    public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                        Log.d(String.valueOf(result.size()), "onSuccessfulResponse: ");
+                        for (int i = 0; i < result.size(); i++) {
+                            Log.d(String.valueOf(i), "onSuccessfulResponse: ");
+                            Log.d(result.get(i).toString(), "onSuccessfulResponse: ");
+                        }
+                    }
+                });
+                ///////
+
+
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
@@ -100,5 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private static void setTabFragment(Fragment fragment){
+
     }
 }
