@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
     DBHelper weatherDataBase;
     Geocoding geocoding;
     TabLayout tabLayout;
+    Fragment fragment = new HomePage();
     double latitude, longitude;
 
-    WeatherInfo weatherInfo = new WeatherInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
 
         //check condition for dark_mode
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
@@ -73,25 +75,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabLayout = findViewById(R.id.tabLayout);
+        setTabFragment(fragment);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.d("click", "onTabSelected: ");
-                ///////
-                weatherInfo.getWeatherInfoByCoordinates(40.730610, -73.935242,getApplicationContext() , new VolleyCallback() {
-                    @Override
-                    public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
-                        Log.d(String.valueOf(result.size()), "onSuccessfulResponse: ");
-                        for (int i = 0; i < result.size(); i++) {
-                            Log.d(String.valueOf(i), "onSuccessfulResponse: ");
-                            Log.d(result.get(i).toString(), "onSuccessfulResponse: ");
-                        }
-                    }
-                });
-                ///////
-
-
-                Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
                         fragment = new HomePage();
@@ -100,12 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new setting();
                         break;
                 }
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                assert fragment != null;
-                fragmentTransaction.replace(R.id.main, fragment);
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                fragmentTransaction.commit();
+                setTabFragment(fragment);
             }
 
             @Override
@@ -119,7 +101,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private static void setTabFragment(Fragment fragment){
-
+    public void setTabFragment(Fragment fragment){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        assert fragment != null;
+        fragmentTransaction.replace(R.id.main, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.commit();
     }
 }

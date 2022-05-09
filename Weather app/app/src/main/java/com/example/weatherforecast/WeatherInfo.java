@@ -47,10 +47,10 @@ public class WeatherInfo {
 
                         JSONObject jsonObjectMain = jsonObjectWeather.getJSONObject("main");
 
-                        double temper = jsonObjectMain.getDouble("temp") - 273.15;
+                        double temper = jsonObjectMain.getDouble("temp");
                         cityWeatherInfo.get(i).add(String.valueOf(temper));//1
 
-                        double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
+                        double feelsLike = jsonObjectMain.getDouble("feels_like");
                         cityWeatherInfo.get(i).add(String.valueOf(feelsLike));//2
 
                         JSONObject jsonObjectWind = jsonObjectWeather.getJSONObject("wind");

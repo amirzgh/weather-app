@@ -1,5 +1,8 @@
 package com.example.weatherforecast;
 
+import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,14 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 
 public class HomePage extends Fragment {
-
     Button search_btn;
     public RadioButton byName_rbtn;
     EditText longitude_txt;
@@ -26,11 +30,17 @@ public class HomePage extends Fragment {
     EditText city_text;
     Boolean isChecked = false;
 
+    ImageView weather_icon_image_view;
+    TextView city_name_home_txt;
+    TextView feels_like_home_txt;
+    TextView city_temperature_home_txt;
+    TextView wind_speed_home_txt;
+
     WeatherInfo weatherInfo = new WeatherInfo();
     VolleyCallback volleyCallback;
 
-    ArrayList<String> weatherResponse = new ArrayList<>();
-
+    ArrayList<ArrayList<String>> weatherResponse = new ArrayList<>();
+    ArrayList<String> todayWeather = new ArrayList<>();
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -73,12 +83,12 @@ public class HomePage extends Fragment {
         }
     }
 
-    public void changeVisibility(){
-        if (!isChecked){
+    public void changeVisibility() {
+        if (!isChecked) {
             city_text.setVisibility(View.INVISIBLE);
             latitude_txt.setVisibility(View.VISIBLE);
             longitude_txt.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             city_text.setVisibility(View.VISIBLE);
             latitude_txt.setVisibility(View.INVISIBLE);
             longitude_txt.setVisibility(View.INVISIBLE);
@@ -96,9 +106,15 @@ public class HomePage extends Fragment {
         byName_rbtn = view.findViewById(R.id.byName_rbtn);
         search_btn = view.findViewById(R.id.search_btn);
 
+        weather_icon_image_view = view.findViewById(R.id.weather_icon_image_view);
+        city_name_home_txt = view.findViewById(R.id.city_name_home_txt);
+        feels_like_home_txt = view.findViewById(R.id.feels_like_home_txt);
+        city_temperature_home_txt = view.findViewById(R.id.city_temperature_home_txt);
+        wind_speed_home_txt = view.findViewById(R.id.wind_speed_home_txt);
+
         changeVisibility();
 
-        byName_rbtn.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener(){
+        byName_rbtn.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isChecked = b;
@@ -108,22 +124,63 @@ public class HomePage extends Fragment {
 
         search_btn.setOnClickListener(new View.OnClickListener() {
             private static final String TAG = "click";
+
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: ");
-                weatherInfo.getWeatherInfoByCoordinates(40.730610, -73.935242, getContext(), new VolleyCallback() {
-                    @Override
-                    public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
-                        Log.d(String.valueOf(result.size()), "onSuccessfulResponse: ");
-                        for (int i = 0; i < result.size(); i++) {
-                            Log.d(String.valueOf(i), "onSuccessfulResponse: ");
-                            Log.d(result.get(i).toString(), "onSuccessfulResponse: ");
-                        }
-                    }
-                });
+                if (!isChecked){
+                    getWeather(false,Float.parseFloat(latitude_txt.getText().toString()),Float.parseFloat(longitude_txt.getText().toString()),null);
+                }
+
             }
         });
-
         return view;
     }
+
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+    public void setTodayWeather() {
+        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
+        city_temperature_home_txt.setText(todayWeather.get(2));
+        feels_like_home_txt.setText(todayWeather.get(3));
+        wind_speed_home_txt.setText(todayWeather.get(4));
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public Drawable getIcon(String condition){
+        switch (condition){
+            case "clear sky" :
+                return getResources().getDrawable(R.drawable.ic_sun);
+            case "few clouds" :
+                return getResources().getDrawable(R.drawable.ic_cloud);
+            case "scattered clouds" :
+                return getResources().getDrawable(R.drawable.ic_cloud);
+            case "broken clouds" :
+                return getResources().getDrawable(R.drawable.ic_cloud);
+            case "overcast clouds" :
+                return getResources().getDrawable(R.drawable.ic_cloud);
+            case "shower rain" :
+                return getResources().getDrawable(R.drawable.ic_cloud_rain);
+            case "rain" :
+                return getResources().getDrawable(R.drawable.ic_cloud_rain);
+            case "thunderstorm" :
+                return getResources().getDrawable(R.drawable.ic_lightning);
+            case "mist" :
+                return getResources().getDrawable(R.drawable.ic_tornado);
+            default: return getResources().getDrawable(R.drawable.ic_baseline_cloud_24);
+        }
+    }
+
+    public void getWeather(Boolean byName,float latitude,float longitude,String cityName){
+        if (!byName){
+            weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
+                @Override
+                public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                    weatherResponse = result;
+                    todayWeather = weatherResponse.get(0);
+                    setTodayWeather();
+                    Log.d("result", String.valueOf(todayWeather));
+                }
+            });
+        }
+    }
+
 }

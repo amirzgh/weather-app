@@ -33,7 +33,7 @@
             android:ems="10"
             android:hint="@string/latitude"
             android:importantForAutofill="no"
-            android:inputType="number"
+            android:inputType="numberDecimal|numberSigned"
             android:textColorHint="#757575"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
             android:ems="10"
             android:hint="@string/longitude"
             android:importantForAutofill="no"
-            android:inputType="number"
+            android:inputType="numberDecimal|numberSigned"
             android:textColorHint="#757575"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/latitude_txt"
@@ -94,7 +94,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/weather_icon_image_view"
                     android:layout_width="146dp"
                     android:layout_height="163dp"
                     android:src="@android:mipmap/sym_def_app_icon"
@@ -109,17 +109,17 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:text="tehran"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintStart_toEndOf="@+id/weather_icon_image_view"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/feels_like_homeP_hard_txt"
+                    android:id="@+id/feels_like_home_hard_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="37dp"
                     android:text="Feels like"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintStart_toEndOf="@+id/weather_icon_image_view"
                     app:layout_constraintTop_toBottomOf="@+id/city_name_home_txt" />
 
                 <TextView
@@ -130,10 +130,10 @@
                     android:layout_marginEnd="10dp"
                     android:text="20"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/city_temperatur_home_txt" />
+                    app:layout_constraintTop_toBottomOf="@+id/city_temperature_home_txt" />
 
                 <TextView
-                    android:id="@+id/city_temperatur_home_txt"
+                    android:id="@+id/city_temperature_home_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -159,8 +159,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="36dp"
                     android:text="wind speed"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/feels_like_homeP_hard_txt" />
+                    app:layout_constraintStart_toEndOf="@+id/weather_icon_image_view"
+                    app:layout_constraintTop_toBottomOf="@+id/feels_like_home_hard_txt" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
