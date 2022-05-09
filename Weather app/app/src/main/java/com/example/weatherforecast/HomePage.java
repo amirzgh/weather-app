@@ -37,7 +37,7 @@ public class HomePage extends Fragment {
     TextView wind_speed_home_txt;
 
     WeatherInfo weatherInfo = new WeatherInfo();
-    VolleyCallback volleyCallback;
+    Geocoding geocoding = new Geocoding(getContext());
 
     ArrayList<ArrayList<String>> weatherResponse = new ArrayList<>();
     ArrayList<String> todayWeather = new ArrayList<>();
@@ -127,8 +127,22 @@ public class HomePage extends Fragment {
 
             @Override
             public void onClick(View view) {
-                if (!isChecked){
-                    getWeather(false,Float.parseFloat(latitude_txt.getText().toString()),Float.parseFloat(longitude_txt.getText().toString()),null);
+                if (!isChecked) {
+                    getWeather( Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
+                            , geocoding.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+                } else {
+                    String city = city_text.getText().toString();
+                    Double[] coordinate = geocoding.getCoordinate(city);
+                    Double latitude;
+                    Double longitude;
+
+                    if (coordinate[2] == 1.0) {
+                        latitude = coordinate[0];
+                        longitude = coordinate[1];
+                        getWeather( Float.parseFloat(String.valueOf(latitude)), Float.parseFloat(String.valueOf(longitude)), city);
+                    }
+
+
                 }
 
             }
@@ -145,42 +159,38 @@ public class HomePage extends Fragment {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public Drawable getIcon(String condition){
-        switch (condition){
-            case "clear sky" :
+    public Drawable getIcon(String condition) {
+        switch (condition) {
+            case "clear sky":
                 return getResources().getDrawable(R.drawable.ic_sun);
-            case "few clouds" :
+            case "few clouds":
+            case "scattered clouds":
+            case "broken clouds":
+            case "overcast clouds":
                 return getResources().getDrawable(R.drawable.ic_cloud);
-            case "scattered clouds" :
-                return getResources().getDrawable(R.drawable.ic_cloud);
-            case "broken clouds" :
-                return getResources().getDrawable(R.drawable.ic_cloud);
-            case "overcast clouds" :
-                return getResources().getDrawable(R.drawable.ic_cloud);
-            case "shower rain" :
+            case "shower rain":
+            case "rain":
                 return getResources().getDrawable(R.drawable.ic_cloud_rain);
-            case "rain" :
-                return getResources().getDrawable(R.drawable.ic_cloud_rain);
-            case "thunderstorm" :
+            case "thunderstorm":
                 return getResources().getDrawable(R.drawable.ic_lightning);
-            case "mist" :
+            case "mist":
                 return getResources().getDrawable(R.drawable.ic_tornado);
-            default: return getResources().getDrawable(R.drawable.ic_baseline_cloud_24);
+            default:
+                return getResources().getDrawable(R.drawable.ic_baseline_cloud_24);
         }
     }
 
-    public void getWeather(Boolean byName,float latitude,float longitude,String cityName){
-        if (!byName){
-            weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
-                @Override
-                public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
-                    weatherResponse = result;
-                    todayWeather = weatherResponse.get(0);
-                    setTodayWeather();
-                    Log.d("result", String.valueOf(todayWeather));
-                }
-            });
-        }
+    public void getWeather(float latitude, float longitude, String cityName) {
+        weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
+            @Override
+            public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                weatherResponse = result;
+                todayWeather = weatherResponse.get(0);
+                setTodayWeather();
+                city_name_home_txt.setText(cityName);
+                Log.d("result", String.valueOf(todayWeather));
+            }
+        });
     }
 
 }
