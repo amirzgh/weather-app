@@ -132,7 +132,8 @@ public class HomePage extends Fragment {
                             , geocoding.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
                 } else {
                     String city = city_text.getText().toString();
-                    Double[] coordinate = geocoding.getCoordinate(city);
+                    Geocoding  geocoding1 = new Geocoding(getContext());
+                    Double[] coordinate = geocoding1.getCoordinate(city);
                     Double latitude;
                     Double longitude;
 

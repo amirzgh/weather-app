@@ -49,30 +49,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         weatherDataBase = new DBHelper(MainActivity.this);
-        geocoding = new Geocoding(MainActivity.this);
+//        geocoding = new Geocoding(MainActivity.this);
+//
+//        Double[] coordinate = geocoding.getCoordinate("delhi");
+//
+//        if(coordinate[2] == 1.0) {
+//            latitude = coordinate[0];
+//            longitude = coordinate[1];
+//        }
 
-        Double[] coordinate = geocoding.getCoordinate("delhi");
 
-        if(coordinate[2] == 1.0) {
-            latitude = coordinate[0];
-            longitude = coordinate[1];
-        }
-
-
-        Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
+      //  Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
         ////when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
-        new WeatherInfo().getWeatherInfoByCoordinates(latitude, longitude, getApplicationContext(), new VolleyCallback() {
-            @Override
-            public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
-                if(result != null){
-                    for(ArrayList<String> s : result) {
-                        weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
-                                s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
-                                geocoding.getCityFromCoordinate(latitude, longitude), String.valueOf(LocalTime.now()));
-                    }
-                }
-            }
-        });
+//        new WeatherInfo().getWeatherInfoByCoordinates(latitude, longitude, getApplicationContext(), new VolleyCallback() {
+//            @Override
+//            public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+//                if(result != null){
+//                    for(ArrayList<String> s : result) {
+//                        weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
+//                                s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
+//                                geocoding.getCityFromCoordinate(latitude, longitude), String.valueOf(LocalTime.now()));
+//                    }
+//                }
+//            }
+//        });
 
         tabLayout = findViewById(R.id.tabLayout);
         setTabFragment(fragment);
