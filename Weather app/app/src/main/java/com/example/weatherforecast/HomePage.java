@@ -123,16 +123,15 @@ public class HomePage extends Fragment {
         });
 
         search_btn.setOnClickListener(new View.OnClickListener() {
-            private static final String TAG = "click";
 
             @Override
             public void onClick(View view) {
+                Geocoding geocoding1 = new Geocoding(getContext());
                 if (!isChecked) {
-                    getWeather( Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
-                            , geocoding.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+                    getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
+                            , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
                 } else {
                     String city = city_text.getText().toString();
-                    Geocoding  geocoding1 = new Geocoding(getContext());
                     Double[] coordinate = geocoding1.getCoordinate(city);
                     Double latitude;
                     Double longitude;
@@ -140,7 +139,9 @@ public class HomePage extends Fragment {
                     if (coordinate[2] == 1.0) {
                         latitude = coordinate[0];
                         longitude = coordinate[1];
-                        getWeather( Float.parseFloat(String.valueOf(latitude)), Float.parseFloat(String.valueOf(longitude)), city);
+                        getWeather(Float.parseFloat(String.valueOf(latitude))
+                                , Float.parseFloat(String.valueOf(longitude)),
+                                city);
                     }
 
 
@@ -185,10 +186,11 @@ public class HomePage extends Fragment {
         weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
             @Override
             public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                Log.d("in", "onSuccessfulResponse: ");
                 weatherResponse = result;
                 todayWeather = weatherResponse.get(0);
                 setTodayWeather();
-                city_name_home_txt.setText(cityName);
+//                city_name_home_txt.setText(cityName);
                 Log.d("result", String.valueOf(todayWeather));
             }
         });
