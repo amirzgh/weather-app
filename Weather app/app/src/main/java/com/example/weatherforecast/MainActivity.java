@@ -61,9 +61,13 @@ public class MainActivity extends AppCompatActivity {
 
       //  Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
         ////when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
-//        new WeatherInfo().getWeatherInfoByCoordinates(latitude, longitude, getApplicationContext(), new VolleyCallback() {
+
+        ////
+//        new WeatherInfo().getWeatherInfoByCoordinates(1111111, 1111111, getApplicationContext(), new VolleyCallback() {
 //            @Override
 //            public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+        //ToDo System.out.println(String.valueOf(result.get(0).get(0))+"  onErrorResponse  );");
+//
 //                if(result != null){
 //                    for(ArrayList<String> s : result) {
 //                        weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
+////
 
         tabLayout = findViewById(R.id.tabLayout);
         setTabFragment(fragment);

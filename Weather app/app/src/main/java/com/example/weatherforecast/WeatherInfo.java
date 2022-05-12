@@ -81,7 +81,14 @@ public class WeatherInfo {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                ArrayList<ArrayList<String>> cityWeatherInfoError = new ArrayList<>(8);
 
+                for (int i = 0; i < 8; i++) {
+                    cityWeatherInfoError.add(new ArrayList<>(7));
+                }
+                cityWeatherInfoError.get(0).add("onErrorResponse");
+                callback.onSuccessfulResponse(cityWeatherInfoError);
+                System.out.println("  onErrorResponse  )):");
             }
         });
 
