@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,11 +44,14 @@ public class HomePage extends Fragment {
     TextView city_temperature_home_txt;
     TextView wind_speed_home_txt;
 
+    RecyclerView recyclerView;
+
     WeatherInfo weatherInfo = new WeatherInfo();
 
 
     ArrayList<ArrayList<String>> weatherResponse = new ArrayList<>();
     ArrayList<String> todayWeather = new ArrayList<>();
+    WeatherIconService weatherIconService = new WeatherIconService();
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -119,7 +124,13 @@ public class HomePage extends Fragment {
         city_temperature_home_txt = view.findViewById(R.id.city_temperature_home_txt);
         wind_speed_home_txt = view.findViewById(R.id.wind_speed_home_txt);
 
+        recyclerView = view.findViewById(R.id.week_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setVisibility(View.INVISIBLE);
+
         card_view.setVisibility(View.INVISIBLE);
+
 
         changeVisibility();
 
@@ -202,35 +213,19 @@ public class HomePage extends Fragment {
         return view;
     }
 
+    public void initRecyclerView(ArrayList<ArrayList<String>> weather){
+        recyclerView.setAdapter(new RecyclerViewHandler(weather));
+    }
+
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     public void setTodayWeather() {
-        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
+//        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
+        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    public Drawable getIcon(String condition) {
-        switch (condition) {
-            case "clear sky":
-                return getResources().getDrawable(R.drawable.ic_sun);
-            case "few clouds":
-            case "scattered clouds":
-            case "broken clouds":
-            case "overcast clouds":
-                return getResources().getDrawable(R.drawable.ic_cloud);
-            case "shower rain":
-            case "rain":
-                return getResources().getDrawable(R.drawable.ic_cloud_rain);
-            case "thunderstorm":
-                return getResources().getDrawable(R.drawable.ic_lightning);
-            case "mist":
-                return getResources().getDrawable(R.drawable.ic_tornado);
-            default:
-                return getResources().getDrawable(R.drawable.ic_baseline_cloud_24);
-        }
-    }
 
     public void search(){
         Geocoding geocoding1 = new Geocoding(getContext());
@@ -259,13 +254,15 @@ public class HomePage extends Fragment {
         weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
             @Override
             public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
-                Log.d("in", "onSuccessfulResponse: ");
                 weatherResponse = result;
                 todayWeather = weatherResponse.get(0);
                 setTodayWeather();
                 city_name_home_txt.setText(cityName);
+                initRecyclerView(weatherResponse);
+                recyclerView.setVisibility(View.VISIBLE);
                 card_view.setVisibility(View.VISIBLE);
-                Log.d("result", String.valueOf(todayWeather));
+                Log.d("success", String.valueOf(weatherResponse));
+//                Log.d("result", String.valueOf(todayWeather));
             }
         });
     }

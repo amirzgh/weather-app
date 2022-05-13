@@ -11,4 +11,7 @@
     <string name="search">search</string>
     <string name="cityName">City</string>
     <string name="dark">Enter Dark Mode</string>
+    <string name="wind_speed">wind speed</string>
+    <string name="_32_km">32 km</string>
+    <string name="todo">TODO</string>
 </resources>
