@@ -5,8 +5,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class HomePage extends Fragment {
@@ -30,6 +35,7 @@ public class HomePage extends Fragment {
     EditText city_text;
     Boolean isChecked = false;
 
+    CardView card_view;
     ImageView weather_icon_image_view;
     TextView city_name_home_txt;
     TextView feels_like_home_txt;
@@ -37,7 +43,7 @@ public class HomePage extends Fragment {
     TextView wind_speed_home_txt;
 
     WeatherInfo weatherInfo = new WeatherInfo();
-    Geocoding geocoding = new Geocoding(getContext());
+
 
     ArrayList<ArrayList<String>> weatherResponse = new ArrayList<>();
     ArrayList<String> todayWeather = new ArrayList<>();
@@ -106,11 +112,14 @@ public class HomePage extends Fragment {
         byName_rbtn = view.findViewById(R.id.byName_rbtn);
         search_btn = view.findViewById(R.id.search_btn);
 
+        card_view = view.findViewById(R.id.card_view);
         weather_icon_image_view = view.findViewById(R.id.weather_icon_image_view);
         city_name_home_txt = view.findViewById(R.id.city_name_home_txt);
         feels_like_home_txt = view.findViewById(R.id.feels_like_home_txt);
         city_temperature_home_txt = view.findViewById(R.id.city_temperature_home_txt);
         wind_speed_home_txt = view.findViewById(R.id.wind_speed_home_txt);
+
+        card_view.setVisibility(View.INVISIBLE);
 
         changeVisibility();
 
@@ -123,32 +132,73 @@ public class HomePage extends Fragment {
         });
 
         search_btn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-                Geocoding geocoding1 = new Geocoding(getContext());
-                if (!isChecked) {
-                    getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
-                            , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
-                } else {
-                    String city = city_text.getText().toString();
-                    Double[] coordinate = geocoding1.getCoordinate(city);
-                    Double latitude;
-                    Double longitude;
-
-                    if (coordinate[2] == 1.0) {
-                        latitude = coordinate[0];
-                        longitude = coordinate[1];
-                        getWeather(Float.parseFloat(String.valueOf(latitude))
-                                , Float.parseFloat(String.valueOf(longitude)),
-                                city);
-                    }
-
-
-                }
-
+                search();
             }
         });
+
+        city_text.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+                    Timer timer = new Timer();
+                    long DELAY = 5000; //ms
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        timer.cancel();
+                        timer = new Timer();
+                        timer.schedule(
+                                new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        search();
+                                    }
+                                },
+                                DELAY
+                        );
+                    }
+                }
+        );
+
+        longitude_txt.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    private Timer timer = new Timer();
+                    private final long DELAY = 5000; //ms
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        timer.cancel();
+                        timer = new Timer();
+                        timer.schedule(
+                                new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        search();
+                                    }
+                                },
+                                DELAY
+                        );
+                    }
+                }
+        );
         return view;
     }
 
@@ -182,6 +232,29 @@ public class HomePage extends Fragment {
         }
     }
 
+    public void search(){
+        Geocoding geocoding1 = new Geocoding(getContext());
+        if (!isChecked) {
+            getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
+                    , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+        } else {
+            String city = city_text.getText().toString();
+            Double[] coordinate = geocoding1.getCoordinate(city);
+            Double latitude;
+            Double longitude;
+
+            if (coordinate[2] == 1.0) {
+                latitude = coordinate[0];
+                longitude = coordinate[1];
+                getWeather(Float.parseFloat(String.valueOf(latitude))
+                        , Float.parseFloat(String.valueOf(longitude)),
+                        city);
+            }
+
+
+        }
+    }
+
     public void getWeather(float latitude, float longitude, String cityName) {
         weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
             @Override
@@ -190,7 +263,8 @@ public class HomePage extends Fragment {
                 weatherResponse = result;
                 todayWeather = weatherResponse.get(0);
                 setTodayWeather();
-//                city_name_home_txt.setText(cityName);
+                city_name_home_txt.setText(cityName);
+                card_view.setVisibility(View.VISIBLE);
                 Log.d("result", String.valueOf(todayWeather));
             }
         });
