@@ -234,6 +234,7 @@ public class HomePage extends Fragment {
         Geocoding geocoding1 = new Geocoding(getContext());
         if (!isChecked) {
             if(CheckConnectivity.isOnline()) {
+                Log.d("yes", "online : ");
               //  Toast.makeText(getContext(), "connected", Toast.LENGTH_SHORT).show();
                 getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
@@ -249,14 +250,17 @@ public class HomePage extends Fragment {
                         cityWeatherInfo.add(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), String.valueOf(i)));
                     }
                     weatherResponse = cityWeatherInfo;
+                    Log.d(String.valueOf(weatherResponse), "search: ");
                     todayWeather = weatherResponse.get(0);
-                    //setTodayWeather();
-                    //city_name_home_txt.setText(geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
-                    //initRecyclerView(weatherResponse);
-                    //recyclerView.setVisibility(View.VISIBLE);
-                    //card_view.setVisibility(View.VISIBLE);
-                    //Log.d("success", String.valueOf(weatherResponse));
-                    //Toast.makeText(getContext(), "Not connect", Toast.LENGTH_LONG).show();
+                    Log.d("today", String.valueOf(todayWeather));
+                    setTodayWeather();
+//                    city_name_home_txt.setText(geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+//                    city_name_home_txt.setText("tehran");
+                    initRecyclerView(weatherResponse);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    card_view.setVisibility(View.VISIBLE);
+                    Log.d("success", String.valueOf(weatherResponse));
+//                    Toast.makeText(getContext(), "Not connect", Toast.LENGTH_LONG).show();
                 }
             }
         } else {
