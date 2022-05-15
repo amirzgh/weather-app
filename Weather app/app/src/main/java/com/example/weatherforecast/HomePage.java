@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -223,7 +224,7 @@ public class HomePage extends Fragment {
     public void setTodayWeather() {
 //        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
         weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
-        Toast.makeText(getContext(), todayWeather.get(2), Toast.LENGTH_SHORT).show();
+  //      Toast.makeText(getContext(), todayWeather.get(2), Toast.LENGTH_SHORT).show();
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
@@ -250,15 +251,20 @@ public class HomePage extends Fragment {
                         cityWeatherInfo.add(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), String.valueOf(i)));
                     }
                     weatherResponse = cityWeatherInfo;
-                    Log.d(String.valueOf(weatherResponse), "search: ");
                     todayWeather = weatherResponse.get(0);
+                    ((MainActivity) requireContext()).runOnUiThread(new Runnable() {
+                        public void run() {
+                            setTodayWeather();
+                            city_name_home_txt.setText(todayWeather.get(10));
+                            initRecyclerView(weatherResponse);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            card_view.setVisibility(View.VISIBLE);
+                            Log.d("UI thread", "I am the UI thread");
+                        }
+                    });
+                    Log.d(String.valueOf(weatherResponse), "search: ");
                     Log.d("today", String.valueOf(todayWeather));
-                    setTodayWeather();
 //                    city_name_home_txt.setText(geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
-//                    city_name_home_txt.setText("tehran");
-                    initRecyclerView(weatherResponse);
-                    recyclerView.setVisibility(View.VISIBLE);
-                    card_view.setVisibility(View.VISIBLE);
                     Log.d("success", String.valueOf(weatherResponse));
 //                    Toast.makeText(getContext(), "Not connect", Toast.LENGTH_LONG).show();
                 }

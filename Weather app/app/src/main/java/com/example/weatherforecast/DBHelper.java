@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> getDataFromDataBase(String latitude, String longitude, String numDay) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
         Geocoding geocoding1 = new Geocoding(context1);
-        String cityName = geocoding1.getCityFromCoordinate(Double.parseDouble(latitude), Double.parseDouble(longitude));
+       // String cityName = geocoding1.getCityFromCoordinate(Double.parseDouble(latitude), Double.parseDouble(longitude));
       //  Toast.makeText(context1, cityName, Toast.LENGTH_LONG).show();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -65,8 +65,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursorCourses.moveToFirst()) {
             do {
                // Toast.makeText(context1,  cursorCourses.getString(10), Toast.LENGTH_LONG).show();
-                if (((cursorCourses.getString(0).equals(latitude) &&
-                        cursorCourses.getString(1).equals(longitude)) || cursorCourses.getString(10).toLowerCase().contains(cityName.toLowerCase())) &&
+                if (isLatAndLngMatch(latitude, cursorCourses.getString(0)) &&
+                        isLatAndLngMatch(longitude, cursorCourses.getString(1)) &&
                         cursorCourses.getString(2).equals(numDay)) {
                     exactWeatherInfo.add(cursorCourses.getString(0));
                     exactWeatherInfo.add(cursorCourses.getString(1));
@@ -87,6 +87,13 @@ public class DBHelper extends SQLiteOpenHelper {
         cursorCourses.close();
 
         return null;
+    }
+
+    public boolean isLatAndLngMatch(String a, String b){
+        if(a.length() > 4 && b.length() > 4){
+            return a.substring(0, 4).equals(b.substring(0, 4));
+        }
+        return false;
     }
 
 
