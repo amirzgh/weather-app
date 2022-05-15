@@ -1,6 +1,8 @@
 package com.example.weatherforecast;
 
 import android.content.Context;
+import android.icu.util.LocaleData;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 
@@ -23,7 +26,6 @@ public class WeatherInfo {
         ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>(8);
         String apiKey = "60d02a8e8559a6937eb7f31c672e18ba";
         String tempUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&cnt=" + 8 + "&appid=" + apiKey + "&units=metric";
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, tempUrl, new Response.Listener<String>() {
 
             @Override
@@ -96,6 +98,5 @@ public class WeatherInfo {
         requestQueue.add(stringRequest);
 
     }
-
 
 }

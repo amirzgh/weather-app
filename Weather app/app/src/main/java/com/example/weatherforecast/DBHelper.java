@@ -5,17 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DBName = "WeatherDatabase";
     public static final String TableName = "WeatherInfo";
+    public Context context1;
 
 
     public DBHelper(@Nullable Context context) {
         super(context, DBName, null, 1);
+        context1 = context;
     }
 
     @Override
@@ -51,14 +55,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<String> getDataFromDataBase(String latitude, String longitude, String numDay) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
+        Geocoding geocoding1 = new Geocoding(context1);
+        String cityName = geocoding1.getCityFromCoordinate(Double.parseDouble(latitude), Double.parseDouble(longitude));
+      //  Toast.makeText(context1, cityName, Toast.LENGTH_LONG).show();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorCourses = db.rawQuery("select * from WeatherInfo", null);
 
         if (cursorCourses.moveToFirst()) {
             do {
-                if (cursorCourses.getString(0).equals(latitude) &&
-                        cursorCourses.getString(1).equals(longitude) &&
+               // Toast.makeText(context1,  cursorCourses.getString(10), Toast.LENGTH_LONG).show();
+                if (((cursorCourses.getString(0).equals(latitude) &&
+                        cursorCourses.getString(1).equals(longitude)) || cursorCourses.getString(10).toLowerCase().contains(cityName.toLowerCase())) &&
                         cursorCourses.getString(2).equals(numDay)) {
                     exactWeatherInfo.add(cursorCourses.getString(0));
                     exactWeatherInfo.add(cursorCourses.getString(1));

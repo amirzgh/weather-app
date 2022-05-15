@@ -3,6 +3,7 @@ package com.example.weatherforecast;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,14 +35,23 @@ public class Geocoding {
     }
 
     public String getCityFromCoordinate(Double latitude, Double longitude){
+      //  Toast.makeText(context, "shit", Toast.LENGTH_SHORT).show();
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        List<Address> addresses = null;
+        List<Address> addresses;
+        String result = null;
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if(addresses != null && addresses.size() > 0){
+                if(addresses.get(0).getLocality() != null){
+                    result = addresses.get(0).getLocality();
+                } else {
+                    result = addresses.get(0).getAddressLine(0);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return addresses != null ? addresses.get(0).getAddressLine(0) : null;
+        return result;
     }
 
 }

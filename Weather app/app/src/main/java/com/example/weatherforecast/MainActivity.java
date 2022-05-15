@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -28,16 +29,20 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBHelper weatherDataBase;
+    @SuppressLint("StaticFieldLeak")
+    public static DBHelper weatherDataBase;
     Geocoding geocoding;
     TabLayout tabLayout;
     Fragment fragment = new HomePage();
     double latitude, longitude;
 
 
+    public static DBHelper getWeatherDataBase() {
+        return weatherDataBase;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         //check condition for dark_mode
@@ -50,16 +55,16 @@ public class MainActivity extends AppCompatActivity {
 
         weatherDataBase = new DBHelper(MainActivity.this);
         geocoding = new Geocoding(MainActivity.this);
-
-        Double[] coordinate = geocoding.getCoordinate("delhi");
-
-        if(coordinate[2] == 1.0) {
-            latitude = coordinate[0];
-            longitude = coordinate[1];
-        }
-
-
-        Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
+//
+//        Double[] coordinate = geocoding.getCoordinate("tehran");
+//
+//        if(coordinate[2] == 1.0) {
+//            latitude = coordinate[0];
+//            longitude = coordinate[1];
+//        }
+//
+//
+//        Toast.makeText(getApplicationContext(), geocoding.getCityFromCoordinate(latitude, longitude), Toast.LENGTH_LONG).show();
         //when you want to get weather info copy this pieace of code (put instead of 40.730610 the latitude and instead of -73.935242 the longitude)
 //        new WeatherInfo().getWeatherInfoByCoordinates(latitude, longitude, getApplicationContext(), new VolleyCallback() {
 //            @Override

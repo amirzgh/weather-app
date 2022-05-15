@@ -23,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -221,6 +223,7 @@ public class HomePage extends Fragment {
     public void setTodayWeather() {
 //        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
         weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
+        Toast.makeText(getContext(), todayWeather.get(2), Toast.LENGTH_SHORT).show();
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
@@ -230,8 +233,32 @@ public class HomePage extends Fragment {
     public void search(){
         Geocoding geocoding1 = new Geocoding(getContext());
         if (!isChecked) {
-            getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
-                    , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+            if(CheckConnectivity.isOnline()) {
+              //  Toast.makeText(getContext(), "connected", Toast.LENGTH_SHORT).show();
+                getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
+                        , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+            } else{
+                //Toast.makeText(getContext(), "Not connect and wrong coordinate", Toast.LENGTH_LONG).show();
+                DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
+                if(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null){
+                    //Toast.makeText(getContext(), "Not exist", Toast.LENGTH_LONG).show();
+                } else {
+                    //Toast.makeText(getContext(), "exist", Toast.LENGTH_LONG).show();
+                    ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
+                    for (int i = 0; i < 8; i++) {
+                        cityWeatherInfo.add(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), String.valueOf(i)));
+                    }
+                    weatherResponse = cityWeatherInfo;
+                    todayWeather = weatherResponse.get(0);
+                    //setTodayWeather();
+                    //city_name_home_txt.setText(geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
+                    //initRecyclerView(weatherResponse);
+                    //recyclerView.setVisibility(View.VISIBLE);
+                    //card_view.setVisibility(View.VISIBLE);
+                    //Log.d("success", String.valueOf(weatherResponse));
+                    //Toast.makeText(getContext(), "Not connect", Toast.LENGTH_LONG).show();
+                }
+            }
         } else {
             String city = city_text.getText().toString();
             Double[] coordinate = geocoding1.getCoordinate(city);
@@ -254,6 +281,8 @@ public class HomePage extends Fragment {
         weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
             @Override
             public void onSuccessfulResponse(ArrayList<ArrayList<String>> result) {
+                Geocoding geocoding = new Geocoding(getContext());
+                DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
                 weatherResponse = result;
                 todayWeather = weatherResponse.get(0);
                 setTodayWeather();
@@ -263,6 +292,11 @@ public class HomePage extends Fragment {
                 card_view.setVisibility(View.VISIBLE);
                 Log.d("success", String.valueOf(weatherResponse));
 //                Log.d("result", String.valueOf(todayWeather));
+                for(ArrayList<String> s : result) {
+                    weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
+                            s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
+                            cityName, String.valueOf(LocalTime.now()));
+                }
             }
         });
     }
