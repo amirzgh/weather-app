@@ -1,8 +1,6 @@
 package com.example.weatherforecast;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -21,13 +19,10 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,6 +30,7 @@ import java.util.TimerTask;
 public class HomePage extends Fragment {
     Button search_btn;
     public RadioButton byName_rbtn;
+    RadioButton byGeo_rbtn;
     EditText longitude_txt;
     EditText latitude_txt;
     EditText city_text;
@@ -118,6 +114,7 @@ public class HomePage extends Fragment {
         latitude_txt = view.findViewById(R.id.latitude_txt);
         longitude_txt = view.findViewById(R.id.longitude_txt);
         byName_rbtn = view.findViewById(R.id.byName_rbtn);
+        byGeo_rbtn = view.findViewById(R.id.byGeo_rbtn);
         search_btn = view.findViewById(R.id.search_btn);
 
         card_view = view.findViewById(R.id.card_view);
@@ -141,6 +138,14 @@ public class HomePage extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isChecked = b;
+                changeVisibility();
+            }
+        });
+
+        byGeo_rbtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isChecked = !b;
                 changeVisibility();
             }
         });
