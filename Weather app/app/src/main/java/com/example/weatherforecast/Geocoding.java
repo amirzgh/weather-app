@@ -32,6 +32,7 @@ public class Geocoding {
             }
         } catch (IOException e) {
            // e.printStackTrace();
+           // Toast.makeText(context, "ci", Toast.LENGTH_SHORT).show();
         }
         return result;
     }

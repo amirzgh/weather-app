@@ -296,9 +296,22 @@ public class HomePage extends Fragment {
                     getWeather(Float.parseFloat(String.valueOf(latitude))
                             , Float.parseFloat(String.valueOf(longitude)),
                             city);
+                } else{
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"City not found",Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             } else {
                 if(weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0") == null){
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"City not found in data base",Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
                     ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
                     for (int i = 0; i < 8; i++) {
