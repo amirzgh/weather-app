@@ -1,5 +1,6 @@
 package com.example.weatherforecast;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -38,17 +39,25 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHandler.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewHandler.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.row_week_image.setImageDrawable(weatherIconService.getIcon(days.get(position).get(1), viewContext));
         holder.row_week_date.setText(getDate(position));
         holder.row_week_wind_speed.setText(days.get(position).get(4));
         holder.row_week_temperature.setText(days.get(position).get(2));
-        holder.week_card_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(viewContext, WeatherDayInformation.class);
-                viewContext.startActivity(intent);
-            }
+        holder.week_card_view.setOnClickListener(view -> {
+            Intent intent = new Intent(viewContext, WeatherDayInformation.class);
+            intent.putExtra("numDay",days.get(position).get(2));
+            intent.putExtra("description",days.get(position).get(3));
+            intent.putExtra("speed",days.get(position).get(4));
+            intent.putExtra("pressure",days.get(position).get(5));
+            intent.putExtra("temperature",days.get(position).get(6));
+            intent.putExtra("feels_like",days.get(position).get(7));
+            intent.putExtra("humidity",days.get(position).get(8));
+            intent.putExtra("clouds",days.get(position).get(9));
+            intent.putExtra("cityName",days.get(position).get(10));
+            intent.putExtra("reqHour",days.get(position).get(11));
+
+            viewContext.startActivity(intent);
         });
     }
 
