@@ -226,7 +226,7 @@ public class HomePage extends Fragment {
     }
 
     public void initRecyclerView(ArrayList<ArrayList<String>> weather){
-        recyclerView.setAdapter(new RecyclerViewHandler(weather,CheckConnectivity.isOnline()));
+        recyclerView.setAdapter(new RecyclerViewHandler(weather,CheckConnectivity.isOnline(requireContext())));
     }
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
@@ -250,7 +250,7 @@ public class HomePage extends Fragment {
         Geocoding geocoding1 = new Geocoding(getContext());
         DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
         if (!isChecked) {
-            if(CheckConnectivity.isOnline()) {
+            if(CheckConnectivity.isOnline(requireContext())) {
                 Log.d("yes", "online : ");
                 getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
@@ -283,7 +283,7 @@ public class HomePage extends Fragment {
                 }
             }
         } else {
-            if(CheckConnectivity.isOnline()) {
+            if(CheckConnectivity.isOnline(requireContext())) {
                 Log.d("online", "search: ");
                 String city = city_text.getText().toString();
                 Double[] coordinate = geocoding1.getCoordinate(city);
