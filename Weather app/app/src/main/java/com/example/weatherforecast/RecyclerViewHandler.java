@@ -1,6 +1,7 @@
 package com.example.weatherforecast;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,8 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
         holder.week_card_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(viewContext, "clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(viewContext, WeatherDayInformation.class);
+                viewContext.startActivity(intent);
             }
         });
     }
