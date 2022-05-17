@@ -31,7 +31,7 @@ public class Geocoding {
                 result[2] = 1.0;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
         return result;
     }
