@@ -1,25 +1,21 @@
 package com.example.weatherforecast;
 
-
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 
 public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandler.ViewHolder> {
@@ -46,6 +42,12 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
         holder.row_week_date.setText(getDate(position));
         holder.row_week_wind_speed.setText(days.get(position).get(4));
         holder.row_week_temperature.setText(days.get(position).get(2));
+        holder.week_card_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(viewContext, "clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -58,12 +60,14 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
         ImageView row_week_image;
         TextView row_week_temperature;
         TextView row_week_wind_speed;
+        CardView week_card_view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             row_week_date = itemView.findViewById(R.id.row_week_date);
             row_week_image = itemView.findViewById(R.id.row_week_image);
             row_week_temperature = itemView.findViewById(R.id.row_week_temperature);
             row_week_wind_speed = itemView.findViewById(R.id.row_week_wind_speed);
+            week_card_view = itemView.findViewById(R.id.weekday_card_view);
         }
     }
 

@@ -131,7 +131,6 @@ public class HomePage extends Fragment {
 
         card_view.setVisibility(View.INVISIBLE);
 
-
         changeVisibility();
 
         byName_rbtn.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
