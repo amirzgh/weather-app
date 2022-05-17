@@ -229,7 +229,6 @@ public class HomePage extends Fragment {
     public void setTodayWeather() {
 //        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
         weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
-  //      Toast.makeText(getContext(), todayWeather.get(2), Toast.LENGTH_SHORT).show();
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
@@ -238,19 +237,16 @@ public class HomePage extends Fragment {
 
     public void search(){
         Geocoding geocoding1 = new Geocoding(getContext());
+        DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
         if (!isChecked) {
             if(CheckConnectivity.isOnline()) {
                 Log.d("yes", "online : ");
-              //  Toast.makeText(getContext(), "connected", Toast.LENGTH_SHORT).show();
                 getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
             } else{
-                //Toast.makeText(getContext(), "Not connect and wrong coordinate", Toast.LENGTH_LONG).show();
-                DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
                 if(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null){
-                    //Toast.makeText(getContext(), "Not exist", Toast.LENGTH_LONG).show();
+                    //not in data base
                 } else {
-                    //Toast.makeText(getContext(), "exist", Toast.LENGTH_LONG).show();
                     ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
                     for (int i = 0; i < 8; i++) {
                         cityWeatherInfo.add(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), String.valueOf(i)));
@@ -264,31 +260,50 @@ public class HomePage extends Fragment {
                             initRecyclerView(weatherResponse);
                             recyclerView.setVisibility(View.VISIBLE);
                             card_view.setVisibility(View.VISIBLE);
-                            Log.d("UI thread", "I am the UI thread");
                         }
                     });
                     Log.d(String.valueOf(weatherResponse), "search: ");
                     Log.d("today", String.valueOf(todayWeather));
-//                    city_name_home_txt.setText(geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
                     Log.d("success", String.valueOf(weatherResponse));
-//                    Toast.makeText(getContext(), "Not connect", Toast.LENGTH_LONG).show();
                 }
             }
         } else {
-            String city = city_text.getText().toString();
-            Double[] coordinate = geocoding1.getCoordinate(city);
-            Double latitude;
-            Double longitude;
+            if(CheckConnectivity.isOnline()) {
+                String city = city_text.getText().toString();
+                Double[] coordinate = geocoding1.getCoordinate(city);
+                Double latitude;
+                Double longitude;
 
-            if (coordinate[2] == 1.0) {
-                latitude = coordinate[0];
-                longitude = coordinate[1];
-                getWeather(Float.parseFloat(String.valueOf(latitude))
-                        , Float.parseFloat(String.valueOf(longitude)),
-                        city);
+                if (coordinate[2] == 1.0) {
+                    latitude = coordinate[0];
+                    longitude = coordinate[1];
+                    getWeather(Float.parseFloat(String.valueOf(latitude))
+                            , Float.parseFloat(String.valueOf(longitude)),
+                            city);
+                }
+            } else {
+                if(weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0") == null){
+                } else {
+                    ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
+                    for (int i = 0; i < 8; i++) {
+                        cityWeatherInfo.add(weatherDataBase.getDataFromDataBase(city_text.getText().toString(), String.valueOf(i)));
+                    }
+                    weatherResponse = cityWeatherInfo;
+                    todayWeather = weatherResponse.get(0);
+                    ((MainActivity) requireContext()).runOnUiThread(new Runnable() {
+                        public void run() {
+                            setTodayWeather();
+                            city_name_home_txt.setText(todayWeather.get(10));
+                            initRecyclerView(weatherResponse);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            card_view.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    Log.d(String.valueOf(weatherResponse), "search: ");
+                    Log.d("today", String.valueOf(todayWeather));
+                    Log.d("success", String.valueOf(weatherResponse));
+                }
             }
-
-
         }
     }
 
@@ -306,12 +321,16 @@ public class HomePage extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
                 card_view.setVisibility(View.VISIBLE);
                 Log.d("success", String.valueOf(weatherResponse));
-//                Log.d("result", String.valueOf(todayWeather));
                 for(ArrayList<String> s : result) {
                     weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
                             s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
                             cityName, String.valueOf(LocalTime.now()));
                 }
+            }
+
+            @Override
+            public void onErrorOccurredResponse(ArrayList<ArrayList<String>> result) {
+
             }
         });
     }

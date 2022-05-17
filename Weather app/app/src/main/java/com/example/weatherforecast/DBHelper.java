@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertData(String latitude, String longitude, String numDay, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds, String cityName, String reqHour) {
+    public void insertData(String latitude, String longitude, String numDay, String description, String speed, String pressure, String temperature, String feels_like, String humidity, String clouds, String cityName, String reqHour) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -50,24 +49,49 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("cityName", cityName);
         contentValues.put("reqHour", reqHour);
         db.insert(TableName, null, contentValues);
-        return true;
     }
 
     public ArrayList<String> getDataFromDataBase(String latitude, String longitude, String numDay) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
-        Geocoding geocoding1 = new Geocoding(context1);
-       // String cityName = geocoding1.getCityFromCoordinate(Double.parseDouble(latitude), Double.parseDouble(longitude));
-      //  Toast.makeText(context1, cityName, Toast.LENGTH_LONG).show();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorCourses = db.rawQuery("select * from WeatherInfo", null);
 
         if (cursorCourses.moveToFirst()) {
             do {
-               // Toast.makeText(context1,  cursorCourses.getString(10), Toast.LENGTH_LONG).show();
                 if (isLatAndLngMatch(latitude, cursorCourses.getString(0)) &&
                         isLatAndLngMatch(longitude, cursorCourses.getString(1)) &&
                         cursorCourses.getString(2).equals(numDay)) {
+                    exactWeatherInfo.add(cursorCourses.getString(0));
+                    exactWeatherInfo.add(cursorCourses.getString(1));
+                    exactWeatherInfo.add(cursorCourses.getString(2));
+                    exactWeatherInfo.add(cursorCourses.getString(3));
+                    exactWeatherInfo.add(cursorCourses.getString(4));
+                    exactWeatherInfo.add(cursorCourses.getString(5));
+                    exactWeatherInfo.add(cursorCourses.getString(6));
+                    exactWeatherInfo.add(cursorCourses.getString(7));
+                    exactWeatherInfo.add(cursorCourses.getString(8));
+                    exactWeatherInfo.add(cursorCourses.getString(9));
+                    exactWeatherInfo.add(cursorCourses.getString(10));
+                    exactWeatherInfo.add(cursorCourses.getString(11));
+                    return exactWeatherInfo;
+                }
+            } while (cursorCourses.moveToNext());
+        }
+        cursorCourses.close();
+
+        return null;
+    }
+
+    public ArrayList<String> getDataFromDataBase(String cityName, String numDay) {
+        ArrayList<String> exactWeatherInfo = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorCourses = db.rawQuery("select * from WeatherInfo", null);
+
+        if (cursorCourses.moveToFirst()) {
+            do {
+                if (cursorCourses.getString(10) != null && cursorCourses.getString(10).toLowerCase().equals(cityName.toLowerCase(Locale.ROOT)) && cursorCourses.getString(2).equals(numDay)) {
                     exactWeatherInfo.add(cursorCourses.getString(0));
                     exactWeatherInfo.add(cursorCourses.getString(1));
                     exactWeatherInfo.add(cursorCourses.getString(2));
@@ -96,21 +120,4 @@ public class DBHelper extends SQLiteOpenHelper {
         return false;
     }
 
-
-
-    public  boolean isCityInfoExistInDB(String cityName) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorCourses = db.rawQuery("SELECT * FROM " + TableName, null);
-
-        if (cursorCourses.moveToFirst()) {
-            do {
-                if (cursorCourses.getString(0).equals(cityName)) {
-                    return true;
-                }
-            } while (cursorCourses.moveToNext());
-            return false;
-        }
-        cursorCourses.close();
-        return false;
-    }
 }

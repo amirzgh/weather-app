@@ -89,7 +89,7 @@ public class WeatherInfo {
                     cityWeatherInfoError.add(new ArrayList<>(7));
                 }
                 cityWeatherInfoError.get(0).add("onErrorResponse");
-                callback.onSuccessfulResponse(cityWeatherInfoError);
+                callback.onErrorOccurredResponse(cityWeatherInfoError);
                 System.out.println("  onErrorResponse  )):");
             }
         });
