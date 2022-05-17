@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -28,6 +31,8 @@ import java.util.TimerTask;
 
 
 public class HomePage extends Fragment {
+
+
     Button search_btn;
     public RadioButton byName_rbtn;
     RadioButton byGeo_rbtn;
@@ -226,7 +231,6 @@ public class HomePage extends Fragment {
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     public void setTodayWeather() {
-//        weather_icon_image_view.setImageDrawable(getIcon(todayWeather.get(1)));
         weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
@@ -254,6 +258,13 @@ public class HomePage extends Fragment {
                 Log.d("no", "online : ");
                 if(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null){
                     //not in data base
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"there is no such data in cache",Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 } else {
                     ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
                     for (int i = 0; i < 8; i++) {
@@ -269,13 +280,11 @@ public class HomePage extends Fragment {
                             card_view.setVisibility(View.VISIBLE);
                         }
                     });
-                    Log.d(String.valueOf(weatherResponse), "search: ");
-                    Log.d("today", String.valueOf(todayWeather));
-                    Log.d("success", String.valueOf(weatherResponse));
                 }
             }
         } else {
             if(CheckConnectivity.isOnline()) {
+                Log.d("online", "search: ");
                 String city = city_text.getText().toString();
                 Double[] coordinate = geocoding1.getCoordinate(city);
                 Double latitude;
@@ -299,8 +308,7 @@ public class HomePage extends Fragment {
                     todayWeather = weatherResponse.get(0);
                     ((MainActivity) requireContext()).runOnUiThread(new Runnable() {
                         public void run() {
-                            setTodayWeather();
-                            city_name_home_txt.setText(todayWeather.get(10));
+                            setWeatherCache();
                             initRecyclerView(weatherResponse);
                             recyclerView.setVisibility(View.VISIBLE);
                             card_view.setVisibility(View.VISIBLE);
@@ -337,7 +345,12 @@ public class HomePage extends Fragment {
 
             @Override
             public void onErrorOccurredResponse(ArrayList<ArrayList<String>> result) {
-
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),"Please Enter Valid input",Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
