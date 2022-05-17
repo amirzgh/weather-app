@@ -221,7 +221,7 @@ public class HomePage extends Fragment {
     }
 
     public void initRecyclerView(ArrayList<ArrayList<String>> weather){
-        recyclerView.setAdapter(new RecyclerViewHandler(weather));
+        recyclerView.setAdapter(new RecyclerViewHandler(weather,CheckConnectivity.isOnline()));
     }
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
@@ -231,6 +231,14 @@ public class HomePage extends Fragment {
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
+    }
+
+    public void setWeatherCache(){
+        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(3),getContext()));
+        city_temperature_home_txt.setText(todayWeather.get(4));
+        feels_like_home_txt.setText(todayWeather.get(5));
+        wind_speed_home_txt.setText(todayWeather.get(6));
+        city_name_home_txt.setText(todayWeather.get(10));
     }
 
 
@@ -243,6 +251,7 @@ public class HomePage extends Fragment {
                 getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
             } else{
+                Log.d("no", "online : ");
                 if(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null){
                     //not in data base
                 } else {
@@ -254,8 +263,7 @@ public class HomePage extends Fragment {
                     todayWeather = weatherResponse.get(0);
                     ((MainActivity) requireContext()).runOnUiThread(new Runnable() {
                         public void run() {
-                            setTodayWeather();
-                            city_name_home_txt.setText(todayWeather.get(10));
+                            setWeatherCache();
                             initRecyclerView(weatherResponse);
                             recyclerView.setVisibility(View.VISIBLE);
                             card_view.setVisibility(View.VISIBLE);
