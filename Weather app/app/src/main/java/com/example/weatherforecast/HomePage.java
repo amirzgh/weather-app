@@ -260,6 +260,12 @@ public class HomePage extends Fragment {
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
             } else {
                 Log.d("no", "online : ");
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "Internet not connect", Toast.LENGTH_LONG).show();
+                    }
+                });
                 if (weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null) {
                     //not in data base
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -316,6 +322,12 @@ public class HomePage extends Fragment {
                     });
                 }
             } else {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "Internet not connect", Toast.LENGTH_LONG).show();
+                    }
+                });
                 if (weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0") == null) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
