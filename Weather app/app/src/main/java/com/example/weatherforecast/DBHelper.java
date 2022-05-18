@@ -51,6 +51,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(TableName, null, contentValues);
     }
 
+    public void deleteData(String latitude, String longitude){
+        if(getDataFromDataBase(latitude, longitude, "0") != null) {
+            SQLiteDatabase db = getWritableDatabase();
+            db.execSQL("DELETE FROM WeatherInfo WHERE latitude " + "=\"" + latitude + "\" AND longitude " + "=\"" + longitude + "\";");
+        }
+    }
+
     public ArrayList<String> getDataFromDataBase(String latitude, String longitude, String numDay) {
         ArrayList<String> exactWeatherInfo = new ArrayList<>();
 

@@ -24,7 +24,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -172,8 +174,10 @@ public class HomePage extends Fragment {
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                     }
+
                     Timer timer = new Timer();
                     long DELAY = 5000; //ms
+
                     @Override
                     public void afterTextChanged(Editable editable) {
                         timer.cancel();
@@ -225,20 +229,20 @@ public class HomePage extends Fragment {
         return view;
     }
 
-    public void initRecyclerView(ArrayList<ArrayList<String>> weather){
-        recyclerView.setAdapter(new RecyclerViewHandler(weather,CheckConnectivity.isOnline(requireContext())));
+    public void initRecyclerView(ArrayList<ArrayList<String>> weather) {
+        recyclerView.setAdapter(new RecyclerViewHandler(weather, CheckConnectivity.isOnline(requireContext())));
     }
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     public void setTodayWeather() {
-        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1),getContext()));
+        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(1), getContext()));
         city_temperature_home_txt.setText(todayWeather.get(2));
         feels_like_home_txt.setText(todayWeather.get(3));
         wind_speed_home_txt.setText(todayWeather.get(4));
     }
 
-    public void setWeatherCache(){
-        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(3),getContext()));
+    public void setWeatherCache() {
+        weather_icon_image_view.setImageDrawable(weatherIconService.getIcon(todayWeather.get(3), getContext()));
         city_temperature_home_txt.setText(todayWeather.get(4));
         feels_like_home_txt.setText(todayWeather.get(5));
         wind_speed_home_txt.setText(todayWeather.get(6));
@@ -246,25 +250,32 @@ public class HomePage extends Fragment {
     }
 
 
-    public void search(){
+    public void search() {
         Geocoding geocoding1 = new Geocoding(getContext());
         DBHelper weatherDataBase = MainActivity.getWeatherDataBase();
         if (!isChecked) {
-            if(CheckConnectivity.isOnline(requireContext())) {
+            if (CheckConnectivity.isOnline(requireContext())) {
                 Log.d("yes", "online : ");
                 getWeather(Float.parseFloat(latitude_txt.getText().toString()), Float.parseFloat(longitude_txt.getText().toString())
                         , geocoding1.getCityFromCoordinate(Double.parseDouble(latitude_txt.getText().toString()), Double.parseDouble(longitude_txt.getText().toString())));
-            } else{
+            } else {
                 Log.d("no", "online : ");
-                if(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null){
+                if (weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0") == null) {
                     //not in data base
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(),"there is no such data in cache",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "there is no such data in cache", Toast.LENGTH_LONG).show();
                         }
                     });
 
+                } else if (!isValidInterval(LocalDateTime.parse(weatherDataBase.getDataFromDataBase(latitude_txt.getText().toString(), longitude_txt.getText().toString(), "0").get(11)), LocalDateTime.now())) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "there is no such data in cache", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
                     ArrayList<ArrayList<String>> cityWeatherInfo = new ArrayList<>();
                     for (int i = 0; i < 8; i++) {
@@ -283,7 +294,7 @@ public class HomePage extends Fragment {
                 }
             }
         } else {
-            if(CheckConnectivity.isOnline(requireContext())) {
+            if (CheckConnectivity.isOnline(requireContext())) {
                 Log.d("online", "search: ");
                 String city = city_text.getText().toString();
                 Double[] coordinate = geocoding1.getCoordinate(city);
@@ -296,20 +307,27 @@ public class HomePage extends Fragment {
                     getWeather(Float.parseFloat(String.valueOf(latitude))
                             , Float.parseFloat(String.valueOf(longitude)),
                             city);
-                } else{
+                } else {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(),"City not found",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "City not found", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
             } else {
-                if(weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0") == null){
+                if (weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0") == null) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(),"City not found in data base",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "City not found in data base", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else if (!isValidInterval(LocalDateTime.parse(weatherDataBase.getDataFromDataBase(city_text.getText().toString(), "0").get(11)), LocalDateTime.now())) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "City not found in data base", Toast.LENGTH_LONG).show();
                         }
                     });
                 } else {
@@ -335,6 +353,39 @@ public class HomePage extends Fragment {
         }
     }
 
+    public boolean isValidInterval(LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
+
+        long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
+        if (years != 0)
+            return false;
+        tempDateTime = tempDateTime.plusYears(years);
+
+        long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
+        if (months != 0)
+            return false;
+        tempDateTime = tempDateTime.plusMonths(months);
+
+        long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
+        if (days != 0)
+            return false;
+        tempDateTime = tempDateTime.plusDays(days);
+
+        long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
+        tempDateTime = tempDateTime.plusHours(hours);
+        if (hours > 12)
+            return false;
+        else if (hours == 12) {
+            long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
+            if (minutes != 0)
+                return false;
+            tempDateTime = tempDateTime.plusMinutes(minutes);
+            long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+            return seconds == 0;
+        }
+        return true;
+    }
+
     public void getWeather(float latitude, float longitude, String cityName) {
         weatherInfo.getWeatherInfoByCoordinates(latitude, longitude, getContext(), new VolleyCallback() {
             @Override
@@ -349,10 +400,11 @@ public class HomePage extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
                 card_view.setVisibility(View.VISIBLE);
                 Log.d("success", String.valueOf(weatherResponse));
-                for(ArrayList<String> s : result) {
+                weatherDataBase.deleteData(String.valueOf(latitude), String.valueOf(longitude));
+                for (ArrayList<String> s : result) {
                     weatherDataBase.insertData(String.valueOf(latitude), String.valueOf(longitude),
-                            s.get(0),s.get(1),s.get(2),s.get(3),s.get(4), s.get(5),s.get(6), s.get(7),
-                            cityName, String.valueOf(LocalTime.now()));
+                            s.get(0), s.get(1), s.get(2), s.get(3), s.get(4), s.get(5), s.get(6), s.get(7),
+                            cityName, String.valueOf(LocalDateTime.now()));
                 }
             }
 
@@ -361,7 +413,7 @@ public class HomePage extends Fragment {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getContext(),"Please Enter Valid input",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Please Enter Valid input", Toast.LENGTH_LONG).show();
                     }
                 });
             }
