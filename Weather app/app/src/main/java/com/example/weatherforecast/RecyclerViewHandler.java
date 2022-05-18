@@ -51,16 +51,14 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
             holder.row_week_temperature.setText(days.get(position).get(2));
             holder.week_card_view.setOnClickListener(view -> {
                 Intent intent = new Intent(viewContext, WeatherDayInformation.class);
-                intent.putExtra("numDay",days.get(position).get(2));
-                intent.putExtra("description",days.get(position).get(3));
-                intent.putExtra("speed",days.get(position).get(4));
-                intent.putExtra("pressure",days.get(position).get(5));
-                intent.putExtra("temperature",days.get(position).get(6));
-                intent.putExtra("feels_like",days.get(position).get(7));
-                intent.putExtra("humidity",days.get(position).get(8));
-                intent.putExtra("clouds",days.get(position).get(9));
-                intent.putExtra("cityName",days.get(position).get(10));
-                intent.putExtra("reqHour",days.get(position).get(11));
+                intent.putExtra("description",days.get(position).get(1));
+                intent.putExtra("temperature",days.get(position).get(4));
+                intent.putExtra("feels_like",days.get(position).get(5));
+                intent.putExtra("speed",days.get(position).get(2));
+                intent.putExtra("pressure",days.get(position).get(3));
+                intent.putExtra("humidity",days.get(position).get(7));
+                intent.putExtra("clouds",days.get(position).get(6));
+                intent.putExtra("cityName",days.get(position).get(1));
 
                 viewContext.startActivity(intent);
             });
@@ -72,7 +70,6 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
             holder.row_week_temperature.setText(days.get(position).get(4));
             holder.week_card_view.setOnClickListener(view -> {
                 Intent intent = new Intent(viewContext, WeatherDayInformation.class);
-                intent.putExtra("numDay",days.get(position).get(2));
                 intent.putExtra("description",days.get(position).get(3));
                 intent.putExtra("speed",days.get(position).get(4));
                 intent.putExtra("pressure",days.get(position).get(5));
@@ -81,7 +78,6 @@ public class RecyclerViewHandler extends RecyclerView.Adapter<RecyclerViewHandle
                 intent.putExtra("humidity",days.get(position).get(8));
                 intent.putExtra("clouds",days.get(position).get(9));
                 intent.putExtra("cityName",days.get(position).get(10));
-                intent.putExtra("reqHour",days.get(position).get(11));
 
                 viewContext.startActivity(intent);
             });

@@ -23,7 +23,6 @@ public class WeatherDayInformation extends AppCompatActivity {
         setContentView(R.layout.activity_weather_day_information);
 
         Intent intent = getIntent();
-        String numDay = intent.getStringExtra("numDay");
         String description = intent.getStringExtra("description");
         String speed = intent.getStringExtra("speed");
         String pressure = intent.getStringExtra("pressure");
@@ -32,7 +31,6 @@ public class WeatherDayInformation extends AppCompatActivity {
         String humidity = intent.getStringExtra("humidity");
         String clouds = intent.getStringExtra("clouds");
         String cityName = intent.getStringExtra("cityName");
-        String reqHour = intent.getStringExtra("reqHour");
 
         day_weather_icon_image_view = findViewById(R.id.day_weather_icon_image_view);
         day_city_name_home_txt = findViewById(R.id.day_city_name_home_txt);
